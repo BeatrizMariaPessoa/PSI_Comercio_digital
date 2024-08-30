@@ -15,3 +15,4 @@ related_name='fabricante', on_delete=models.SET_NULL)
     image = models.ImageField(null=True, blank=True)
     def __str__(self):
         return '{}'.format(self.Produto)
+
