@@ -14,6 +14,8 @@ def create_produto_view(request, id=None):
         promocao = request.POST.get("promocao")
         msgPromocao = request.POST.get("msgPromocao")
         preco = request.POST.get("preco")
+        categoria_id = request.POST.get("CategoriaFk")
+        fabricante_id = request.POST.get("FabricanteFk")
         image = request.POST.get("image")
         print("postback-create")
         print(produto)
@@ -44,12 +46,18 @@ def create_produto_view(request, id=None):
                     filename = fs.save(imagefile.name, imagefile)
                 if (filename is not None) and (filename != ""):
                     obj_produto.image = filename
+            if categoria_id is not None:
+                obj_produto.categoria = Categoria.objects.filter(id=categoria_id).first()
+            if fabricante_id is not None:
+                obj_produto.fabricante = Fabricante.objects.filter(id=fabricante_id).first()
             obj_produto.save()
             print("Produto %s salvo com sucesso" % produto)
         except Exception as e:
             print("Erro inserindo produto: %s" % e)
         return redirect("/produto")
-    return render(request, template_name='produto/produto-create.html',status=200)
+    categorias = Categoria.objects.all()
+    fabricantes = Fabricante.objects.all()
+    return render(request, 'produto/produto-create.html', {'categorias': categorias, 'fabricantes': fabricantes}, status=200)
 
 def details_produto_view(request, id=None):
     # Processa o evento GET gerado pela action
@@ -74,7 +82,8 @@ def edit_produto_view(request, id=None):
     print(produto)
     context = {'produto': produto, 'fabricantes' : Fabricantes, 'categorias' : Categorias}
     return render(request, template_name='produto/produto-edit.html', context=context,status=200)
-# adicione a função que trata o postback da interface de edição
+
+
 def edit_produto_postback(request, id=None):
     # Processa o post back gerado pela action
     if request.method == 'POST':
@@ -83,6 +92,7 @@ def edit_produto_postback(request, id=None):
         produto = request.POST.get("Produto")
         destaque = request.POST.get("destaque")
         promocao = request.POST.get("promocao")
+        preco = request.POST.get("preco")
         msgPromocao = request.POST.get("msgPromocao")
         categoria = request.POST.get("CategoriaFk")
         fabricante = request.POST.get("FabricanteFk")
@@ -91,6 +101,7 @@ def edit_produto_postback(request, id=None):
         print(produto)
         print(destaque)
         print(promocao)
+        print(preco)
         print(msgPromocao)
         try:
             obj_produto = Produto.objects.filter(id=id).first()
