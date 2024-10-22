@@ -21,9 +21,9 @@ def list_usuario_view(request, id=None):
 # adicione o método de edição
 def edit_usuario_view(request):
     usuario = get_object_or_404(Usuario, user=request.user)
-    # Adicione as linhas a seguir
-    # Perceba que os forms foram transferidos para dentro do if e do else
     emailUnused = True
+    message = None
+
     if request.method == 'POST':
         usuarioForm = UserUsuarioForm(request.POST, instance=usuario)
         userForm = UserForm(request.POST, instance=request.user)
@@ -34,13 +34,22 @@ def edit_usuario_view(request):
         if usuarioForm.is_valid() and userForm.is_valid() and emailUnused:
             usuarioForm.save()
             userForm.save()
+            message = { 'type': 'success', 'text': 'Dados atualizados com sucesso' }
+        else:
+            if request.method == 'POST':
+                if emailUnused:
+                    message = { 'type': 'danger', 'text': 'Dados inválidos' }
+                else:
+                    message = { 'type': 'warning', 'text': 'E-mail já usado' }
     else:
         usuarioForm = UserUsuarioForm(instance=usuario)
         userForm = UserForm(instance=request.user)
     # Até aqui antes do context
     context = {
         'usuarioForm': usuarioForm,
-        'userForm': userForm
+        'userForm': userForm,
+        'message': message
     }
+
     return render(request, template_name='usuario/usuario-edit.html', context=context, status=200)
 
