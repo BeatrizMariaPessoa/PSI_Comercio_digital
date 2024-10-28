@@ -3,61 +3,86 @@ from loja.models import *
 from datetime import timedelta, datetime
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
+from loja.forms.ProdutoForm import ProdutoCreateForm
 
 # adicione a função que chama a interface de criar produto
 # no final do arquivo
+
 def create_produto_view(request, id=None):
-    # Processa o post back gerado pela action
+
     if request.method == 'POST':
-        produto = request.POST.get("Produto")
-        destaque = request.POST.get("destaque")
-        promocao = request.POST.get("promocao")
-        msgPromocao = request.POST.get("msgPromocao")
-        preco = request.POST.get("preco")
-        categoria_id = request.POST.get("CategoriaFk")
-        fabricante_id = request.POST.get("FabricanteFk")
-        image = request.POST.get("image")
         print("postback-create")
-        print(produto)
-        print(destaque)
-        print(promocao)
-        print(msgPromocao)
-        print(preco)
-        print(image)
-        try:
-            obj_produto = Produto()
-            obj_produto.Produto = produto
-            obj_produto.destaque = (destaque is not None)
-            obj_produto.promocao = (promocao is not None)
-            if msgPromocao is not None:
-                obj_produto.msgPromocao = msgPromocao
-            obj_produto.preco = 0
-            if (preco is not None) and ( preco != ""):
-                obj_produto.preco = preco
-                obj_produto.criado_em = timezone.now()
-                obj_produto.alterado_em = obj_produto.criado_em
-            # Se for anexado arquivo, salva na pasta e guarda nome no objeto
-            if request.FILES is not None:
-                num_files = len(request.FILES.getlist('image'))
-                if num_files > 0:
-                    imagefile = request.FILES['image']
-                    print(imagefile)
-                    fs = FileSystemStorage()
-                    filename = fs.save(imagefile.name, imagefile)
-                if (filename is not None) and (filename != ""):
-                    obj_produto.image = filename
-            if categoria_id is not None:
-                obj_produto.categoria = Categoria.objects.filter(id=categoria_id).first()
-            if fabricante_id is not None:
-                obj_produto.fabricante = Fabricante.objects.filter(id=fabricante_id).first()
-            obj_produto.save()
-            print("Produto %s salvo com sucesso" % produto)
-        except Exception as e:
-            print("Erro inserindo produto: %s" % e)
-        return redirect("/produto")
+   
+
+        form = ProdutoCreateForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("/produto")
+        else:
+            print("FORM INVALIDO!!!!!!!!!!!")
+            print(form.errors)
+    else:
+
+        form = ProdutoCreateForm()
+    
     categorias = Categoria.objects.all()
     fabricantes = Fabricante.objects.all()
-    return render(request, 'produto/produto-create.html', {'categorias': categorias, 'fabricantes': fabricantes}, status=200)
+
+    # print(form)
+    print(categorias)
+    print(fabricantes)
+    return render(request, 'produto/produto-create.html', {'categorias': categorias, 'fabricantes': fabricantes, 'form': form}, status=200)
+    # Processa o post back gerado pela action
+    # if request.method == 'POST':
+    #     produto = request.POST.get("Produto")
+    #     destaque = request.POST.get("destaque")
+    #     promocao = request.POST.get("promocao")
+    #     msgPromocao = request.POST.get("msgPromocao")
+    #     preco = request.POST.get("preco")
+    #     categoria_id = request.POST.get("CategoriaFk")
+    #     fabricante_id = request.POST.get("FabricanteFk")
+    #     image = request.POST.get("image")
+    #     print("postback-create")
+    #     print(produto)
+    #     print(destaque)
+    #     print(promocao)
+    #     print(msgPromocao)
+    #     print(preco)
+    #     print(categoria_id)
+    #     print(fabricante_id)
+    #     print(image)
+    #     try:
+    #         obj_produto = Produto()
+    #         obj_produto.Produto = produto
+    #         obj_produto.destaque = (destaque is not None)
+    #         obj_produto.promocao = (promocao is not None)
+    #         if msgPromocao is not None:
+    #             obj_produto.msgPromocao = msgPromocao
+    #         obj_produto.preco = 0
+    #         if (preco is not None) and ( preco != ""):
+    #             obj_produto.preco = preco
+    #             obj_produto.criado_em = timezone.now()
+    #             obj_produto.alterado_em = obj_produto.criado_em
+    #         # Se for anexado arquivo, salva na pasta e guarda nome no objeto
+    #         if request.FILES is not None:
+    #             num_files = len(request.FILES.getlist('image'))
+    #             if num_files > 0:
+    #                 imagefile = request.FILES['image']
+    #                 print(imagefile)
+    #                 fs = FileSystemStorage()
+    #                 filename = fs.save(imagefile.name, imagefile)
+    #             if (filename is not None) and (filename != ""):
+    #                 obj_produto.image = filename
+    #         if categoria_id is not None:
+    #             obj_produto.categoria = Categoria.objects.filter(id=categoria_id).first()
+    #         if fabricante_id is not None:
+    #             obj_produto.fabricante = Fabricante.objects.filter(id=fabricante_id).first()
+    #         obj_produto.save()
+    #         print("Produto %s salvo com sucesso" % produto)
+    #     except Exception as e:
+    #         print("Erro inserindo produto: %s" % e)
+    #     return redirect("/produto")
+    
 
 def details_produto_view(request, id=None):
     # Processa o evento GET gerado pela action
@@ -127,7 +152,6 @@ def list_produto_view(request, id=None):
     fabricante = request.GET.get("fabricante")
     dias = request.GET.get("dias")
     produtos = Produto.objects.all()
-    produtos = Produto.objects.all()
     print(produtos)
     if dias is not None:
         now = timezone.now()
@@ -136,23 +160,6 @@ def list_produto_view(request, id=None):
     # Adicione para definir o contexto e carregar o template
     context = {'produtos': produtos}
     return render(request, template_name='produto/produto.html',context=context, status=200)
-    if produto is not None:
-        produtos = produtos.filter(Produto__contains=produto )
-    if promocao is not None:
-        produtos = produtos.filter(promocao=promocao)
-    if destaque is not None:
-        produtos = produtos.filter(destaque=destaque)
-    if categoria is not None:
-        produtos = produtos.filter(categoria__Categoria=categoria)
-    if fabricante is not None:
-        produtos = produtos.filter(fabricante__Fabricante=fabricante)
-    if id is not None:
-        produtos = produtos.filter(id=id)
-    print(produtos)
-
-    if id is None:
-        return HttpResponse('<h1>Nenhum id foi informado</h1>')
-    return HttpResponse('<h1>Produto de id %s!</h1>' % id)
 
 def delete_produto_view(request, id=None):
     # Processa o evento GET gerado pela action
