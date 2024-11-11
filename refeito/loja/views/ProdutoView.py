@@ -1,9 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from loja.models import *
 from datetime import timedelta, datetime
 from django.utils import timezone
 from django.core.files.storage import FileSystemStorage
 from loja.forms.ProdutoForm import ProdutoCreateForm
+
 
 # adicione a função que chama a interface de criar produto
 # no final do arquivo
@@ -96,6 +98,8 @@ def details_produto_view(request, id=None):
     Categorias = Categoria.objects.all()
     context = {'produto': produto, 'fabricantes' : Fabricantes, 'categorias' : Categorias}
     return render(request, template_name='produto/produto-details.html', context=context, status=200)
+
+@login_required
 
 def edit_produto_view(request, id=None):
     produtos = Produto.objects.all()

@@ -1,5 +1,6 @@
 #loja/models/Produto.py parte 1:
 from loja.models import *
+
 class Produto(models.Model):
     Produto = models.CharField(null=False, max_length=100)
     destaque = models.BooleanField(default=True)
