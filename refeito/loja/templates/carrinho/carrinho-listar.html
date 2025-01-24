@@ -23,8 +23,7 @@
             <a class="col-md-2">R$ {{ item.total }}</a>
             <!-- Botão para excluir o item abaixo -->
             <a class="col-md-2">
-                <form method="POST" action="{% url 'remover_carrinhoitem' item.id %}" style="display:inline;"> {%
-                    csrf_token %} <button type="submit" class="btn btn-danger">Excluir</button> </form>
+                <form method="POST" action="{% url 'remover_carrinhoitem' item.id %}" style="display:inline;"> {% csrf_token %} <button type="submit" class="btn btn-danger">Excluir</button> </form>
             </a>
             <!-- Botão para excluir o item acima -->
         </div>
