@@ -93,6 +93,8 @@ def confirmar_carrinho_view(request):
             carrinho.confirmado_em = timezone.make_aware(datetime.today())
             carrinho.save()
             print ('carrinho salvo')
+            
+            request.session.pop('carrinho_id', None)
     context = {
         'carrinho': carrinho
     }
@@ -103,5 +105,20 @@ def remover_item_view(request, item_id):
     # Verifica se o item pertence ao carrinho do usuário (opcional)
     carrinho_id = request.session.get('carrinho_id')
     if carrinho_id == item.carrinho.id:
+        item.delete()
+    return redirect('/carrinho')
+
+def aumentar_quantidade_view(request, item_id):
+    item = get_object_or_404(CarrinhoItem, id=item_id)
+    item.quantidade += 1
+    item.save()
+    return redirect('/carrinho')
+
+def diminuir_quantidade_view(request, item_id):
+    item = get_object_or_404(CarrinhoItem, id=item_id)
+    if item.quantidade > 1:
+        item.quantidade -= 1
+        item.save()
+    else:
         item.delete()
     return redirect('/carrinho')
