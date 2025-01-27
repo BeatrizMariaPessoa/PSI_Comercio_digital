@@ -3,6 +3,7 @@
 {% block title %}Carrinho{% endblock %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/carrinho.css' %}">
 {% endblock %}
 {% block content %}
 <div id="content">
@@ -19,9 +20,9 @@
         <div class="row">
             <a class="col-md-4"> {{ item.produto.Produto }}</a>
             <a class="col-md-2">
-                <form method="POST" action="{% url 'aumentar_quantidade' item.id %}" style="display:inline;"> {% csrf_token %} <button type="submit" >+</button> </form>
+                <form method="POST" action="{% url 'aumentar_quantidade' item.id %}" style="display:inline;"> {% csrf_token %} <button type="submit" class="botao_quantidade">+</button> </form>
                 {{ item.quantidade }}
-                <form method="POST" action="{% url 'diminuir_quantidade' item.id %}" style="display:inline;"> {% csrf_token %} <button type="submit" >-</button> </form>
+                <form method="POST" action="{% url 'diminuir_quantidade' item.id %}" style="display:inline;"> {% csrf_token %} <button type="submit" class="botao_quantidade">-</button> </form>
             </a>
             <a class="col-md-2">R$ {{ item.preco|floatformat:2 }}</a>
             <a class="col-md-2">R$ {{ item.total }}</a>
