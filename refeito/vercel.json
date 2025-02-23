@@ -6,14 +6,14 @@
             "use": "@vercel/python"
         },
         {
-            "src": "lojaAdmin/wsgi.py",
+            "src": "/lojaAdmin/wsgi.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "lojaAdmin/wsgi.py"
+            "dest": "/lojaAdmin/wsgi.py"
         }
     ],
     "rewrites": [
