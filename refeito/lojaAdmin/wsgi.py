@@ -18,6 +18,6 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 import os
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lojaAdmin.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lojaAdmin.settings') # Substitua seu_projeto pelo nome do seu projeto
 
 application = get_wsgi_application()

@@ -14,7 +14,7 @@ from pathlib import Path
 #adicione a linha a baixo
 import os
 BASE_DIR = Path(__file__).resolve().parent.parent
-STATIC_ROOT=os.path.join(BASE_DIR, 'static')# abaixo do BASE_DIR =
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')# abaixo do BASE_DIR =
 Path(__file__).resolve().parent.parent
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,12 +23,12 @@ Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-yt1la!lgi&1w3%z2y2y2zfqjtconbjfg4tj4p*-t3fxy^xc3v_'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['psi-comercio-digital.vercel.app']
 
 
 # Application definition
