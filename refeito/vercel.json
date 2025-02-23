@@ -6,16 +6,16 @@
             "use": "@vercel/python"
         },
         {
-            "src": "wsgi.py",
+            "src": "lojaAdmin/wsgi.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "wsgi.py"
+            "dest": "lojaAdmin/wsgi.py"
         }
-    ]
+    ],
     "rewrites": [
         {
             "source": "/(.*)",
