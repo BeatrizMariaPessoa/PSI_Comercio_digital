@@ -12,6 +12,7 @@ body{
 
 .mainautenticacao{
     margin: 10em 0;
+    display: flex;
 }
 
 .section-autenticacao{
